@@ -2,7 +2,7 @@
 
 <p align="center">
 
-<img src="/assets/logo.png" width="50%" />
+<img src="/assets/cuter-logo.png" width="50%" />
 
 </p>
 
@@ -26,7 +26,7 @@ It lets you define MQTT topic handlers with decorators, parse payloads with Pyda
 
 ## 🚀 Quick Start
 
-### 📦 Installation
+### 📦 Installation (Coming soon)
 
 ```bash
 pip install mqute
