@@ -1,4 +1,4 @@
-# MQute 🐹📡
+# MQute
 
 <p align="center">
 
