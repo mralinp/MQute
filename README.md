@@ -1,5 +1,11 @@
 # MQute 🐹📡
 
+<p align="center">
+
+<img src="/assets/logo.png" width="50%" />
+
+</p>
+
 **MQute** is a minimal, async-first MQTT framework for Python — inspired by FastAPI, built on top of `paho-mqtt`.  
 It lets you define MQTT topic handlers with decorators, parse payloads with Pydantic, and focus on clean, expressive code.
 
