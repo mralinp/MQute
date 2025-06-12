@@ -86,14 +86,14 @@ class Router:
         except Exception as e:
             request.reject(str(e))
 
-    def include_router(self, router: 'Router', include_prefix: Optional[str] = None) -> None:
+    def include_router(self, router: 'Router', prefix: Optional[str] = None) -> None:
         """Include another router, optionally with a prefix"""
         try:
             # Normalize all prefixes
             router_prefix = self._normalize_path(router.prefix)
-            if include_prefix is not None:
-                include_prefix = self._normalize_path(include_prefix)
-                final_prefix = self._normalize_path(f"{include_prefix}/{router_prefix}")
+            if prefix is not None:
+                prefix = self._normalize_path(prefix)
+                final_prefix = self._normalize_path(f"{prefix}/{router_prefix}")
             else:
                 final_prefix = router_prefix
 

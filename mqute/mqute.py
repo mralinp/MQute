@@ -6,6 +6,10 @@ from .credentials import Credential
 from .router import Router
 from .request import Request
 
+class MQuteRequest(Request):
+    def __init__(self, path: str, userdata: Any, payload: Any, resolve: Callable):
+        super().__init__(path, payload, resolve)
+        self.userdata = userdata
 
 class MQute (Router):
     def __init__(self, url: str, port: int, credentials: Credential):
@@ -85,8 +89,9 @@ class MQute (Router):
         topic = message.topic
         payload = message.payload
         # Try each router in order
-        request = Request(
+        request = MQuteRequest(
             path=topic,
+            userdata=userdata,
             payload=payload,
             resolve=lambda response: client.publish(topic, response.to_string(), qos=1, retain=False),
         )
