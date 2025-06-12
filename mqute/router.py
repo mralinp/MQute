@@ -23,10 +23,8 @@ class Router:
         """Run all middlewares in order.
         Middleware should either return (continue) or raise an error (reject)"""
         for middleware in self.__middlewares:
-            if request.is_resolved:
-                return
             try:
-                middleware(request)
+                request = middleware(request)
             except Exception as e:
                 request.reject(str(e))
                 return

@@ -1,43 +1,48 @@
 import pytest
 from mqute import Router, Request, Response, JsonResponse, ErrorResponse
 
-def test_router_middleware():
+@pytest.fixture
+def router():
     router = Router()
-    responses = []
-
-    def handle_response(response: Response):
-        responses.append(response)
-
-    # Middleware that adds a timestamp
+    
     @router.middleware
-    def add_timestamp(request: Request) -> None:
-        if not request.is_resolved:
-            request.payload['timestamp'] = '2024-03-20T12:00:00Z'
+    def add_timestamp(request: Request):
+        request.payload['timestamp'] = '2024-03-20T12:00:00Z'
+        return request
 
-    # Middleware that validates temperature
     @router.middleware
-    def validate_temperature(request: Request) -> None:
+    def validate_temperature(request: Request):
         if request.path.endswith('/temperature'):
             if 'value' not in request.payload:
-                request.resolve_request(ErrorResponse(error="Missing temperature value"))
+                raise Exception("Missing temperature value")
             elif not isinstance(request.payload['value'], (int, float)):
-                request.resolve_request(ErrorResponse(error="Temperature value must be a number"))
+                raise Exception("Temperature value must be a number")
             elif not -50 <= request.payload['value'] <= 100:
-                request.resolve_request(ErrorResponse(error="Temperature out of range"))
+                raise Exception("Temperature out of range")
+        return request
 
-    # Handler for temperature
     @router.sub("devices/temperature")
-    def handle_temperature(request: Request) -> None:
-        request.resolve_request(JsonResponse(data={
+    def handle_temperature(request: Request) -> Response:
+        return JsonResponse(data={
             "status": "received",
             "data": request.payload
-        }))
+        })
+    
+    return router
 
-    # Test valid temperature
+@pytest.fixture
+def handle_response():
+    responses = []
+    def callback(response: Response):
+        responses.append(response)
+    return callback, responses
+
+def test_valid_temperature(router, handle_response):
+    callback, responses = handle_response
     request = Request(
         path="devices/temperature",
         payload={"value": 25},
-        resolve=handle_response
+        resolve=callback
     )
     router.route(request)
     assert len(responses) == 1
@@ -46,36 +51,36 @@ def test_router_middleware():
     assert "timestamp" in responses[0].data["data"]
     assert responses[0].data["data"]["value"] == 25
 
-    # Test missing value
-    responses.clear()
+def test_missing_temperature_value(router, handle_response):
+    callback, responses = handle_response
     request = Request(
         path="devices/temperature",
         payload={},
-        resolve=handle_response
+        resolve=callback
     )
     router.route(request)
     assert len(responses) == 1
     assert isinstance(responses[0], ErrorResponse)
     assert "Missing temperature value" in responses[0].error
 
-    # Test out of range
-    responses.clear()
+def test_temperature_out_of_range(router, handle_response):
+    callback, responses = handle_response
     request = Request(
         path="devices/temperature",
         payload={"value": 150},
-        resolve=handle_response
+        resolve=callback
     )
     router.route(request)
     assert len(responses) == 1
     assert isinstance(responses[0], ErrorResponse)
     assert "Temperature out of range" in responses[0].error
 
-    # Test wrong type
-    responses.clear()
+def test_temperature_wrong_type(router, handle_response):
+    callback, responses = handle_response
     request = Request(
         path="devices/temperature",
         payload={"value": "hot"},
-        resolve=handle_response
+        resolve=callback
     )
     router.route(request)
     assert len(responses) == 1
