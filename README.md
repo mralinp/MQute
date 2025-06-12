@@ -2,7 +2,7 @@
 
 <p align="center">
 
-<img src="/assets/cuter-logo.png" width="50%" />
+<img src="/assets/cute-modern.png" width="50%" />
 
 </p>
 
