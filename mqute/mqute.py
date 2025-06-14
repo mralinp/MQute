@@ -1,4 +1,4 @@
-from typing import Dict, Callable, Any, List
+from typing import Dict, Callable, Any
 import paho.mqtt.client as mqtt
 import threading
 
