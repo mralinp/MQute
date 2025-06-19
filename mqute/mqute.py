@@ -5,6 +5,7 @@ from .credentials import Credential
 from .router import Router
 from .request import Request
 
+
 class MQuteRequest(Request):
     """
     Represents an MQTT request within the MQute framework.
@@ -52,7 +53,23 @@ class MQute (Router):
         # Reattach any existing event handlers
         for event_name, handler in self.__event_handlers.items():
             setattr(self.__client, event_name, handler)
+            
+    @property
+    def Client(self):
+        """
+        Get the underlying MQTT client instance.
+        Returns:
+            mqtt.Client: The MQTT client instance.
+        """
+        return self.__client
     
+    @property
+    def BrokerUrl(self) -> str:
+        return self.__url
+    
+    @property
+    def BrokerPort(self) -> int:
+        return self.__port
     
     def sub(self, path):
         """
@@ -97,7 +114,7 @@ class MQute (Router):
         """
         def decorator(handler: Callable) -> Callable:
             self.__event_handlers['on_disconnect'] = handler
-            if self.__xclient:
+            if self.__client:
                 self.__client.on_disconnect = handler
             return handler
         return decorator
