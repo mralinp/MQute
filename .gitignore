@@ -42,3 +42,7 @@ htmlcov/
 .tox/ 
 
 .env
+
+mosquitto/log/*
+mosquitto/data/*
+mosquitto/password/*
