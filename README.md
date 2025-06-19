@@ -148,3 +148,18 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## ⭐ Star MQute if you like cute things and clean MQTT code!
 
 Made with 💙 by Ali
+
+## Project Directory Structure
+
+Some directories (such as `mosquitto/log/`, `mosquitto/data/`, and `mosquitto/password/`) are required for Mosquitto to run, but are ignored by git for security and cleanliness. To ensure these directories exist in fresh clones, a `.gitkeep` file is placed in each. You can safely leave these files in place.
+
+```
+mosquitto/
+  config/           # Mosquitto configuration files
+  log/              # Mosquitto log files (gitignored, with .gitkeep)
+  data/             # Mosquitto data files (gitignored, with .gitkeep)
+  password/         # Mosquitto password file (gitignored, with .gitkeep)
+  certs/            # TLS certificates
+```
+
+> **Note:** If you remove the `.gitkeep` files, git will not track these empty directories.
