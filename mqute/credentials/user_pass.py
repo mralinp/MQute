@@ -5,13 +5,21 @@ import ssl
 
 
 class UserPassCredential(Credential):
-    """Username and password based credentials"""
+    '''
+    Username and password based credentials used for MQTT authentication.
+    
+    Args:
+        client_id (str): Unique identifier for the MQTT client.
+        username (Optional[str]): Username for MQTT authentication.
+        password (Optional[str]): Password for MQTT authentication.
+        tls (bool): Whether to use TLS for the connection. Defaults to False.
+    '''
     
     def __init__(
         self,
         client_id: str,
         username: Optional[str] = None,
-        password: Optional[str] = None
+        password: Optional[str] = None,
     ):
         self._client_id = client_id
         self._username = username
@@ -19,7 +27,6 @@ class UserPassCredential(Credential):
     
     def create_client(self) -> paho.Client:
         client = paho.Client(client_id=self._client_id, userdata=None, protocol=paho.MQTTv5)
-        client.tls_set(tls_version=ssl.PROTOCOL_TLSv1_2)
         if self._username and self._password:
             client.username_pw_set(
                 username=self._username,

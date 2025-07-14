@@ -6,6 +6,7 @@ from mqute.credentials import UserPassCredential
 
 @pytest.fixture
 def credential():
+    
     username=os.getenv("BROKER_USERNAME")
     password=os.getenv("BROKER_PASSWORD")
     client_id = "headquarter"
@@ -22,7 +23,8 @@ def app(credential):
     
     return app
 
-def test_mqute(app):
+
+def test_connection(app):
     
     message = {"message": "hello"}
     
@@ -30,13 +32,18 @@ def test_mqute(app):
     async def handle_test(request: MQuteRequest):
         print(request.payload)
         return JsonResponse(request.payload)
-
+    
+    @app.on_connect()
+    def on_connect(a,b,c,d,e):
+        print(a,b,c,d,e)
+        print("Connected!")
+        app.publish("/echo", str(message), 0, False)
+        app.disconnect()
+    
     app.start()
-    
-    print("im here...")
-    
-    app.publish("/echo", str(message), 0, False)
-    
+
+
+
 
 def test_mqute_initialization():
     # Get environment variables

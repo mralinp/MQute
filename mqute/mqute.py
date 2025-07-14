@@ -3,23 +3,7 @@ import paho.mqtt.client as mqtt
 
 from .credentials import Credential
 from .router import Router
-from .request import Request
-
-
-class MQuteRequest(Request):
-    """
-    Represents an MQTT request within the MQute framework.
-    Extends the base Request class to include MQTT-specific context such as userdata.
-    
-    Args:
-        path (str): The MQTT topic path.
-        userdata (Any): User-defined data passed to the MQTT client.
-        payload (Any): The message payload received.
-        resolve (Callable): A callback to send a response back to the client.
-    """
-    def __init__(self, path: str, userdata: Any, payload: Any, resolve: Callable):
-        super(self).__init__(path, payload, resolve)
-        self.userdata = userdata
+from .mqute_request import MQuteRequest
 
 
 class MQute (Router):
@@ -54,14 +38,27 @@ class MQute (Router):
         # Reattach any existing event handlers
         for event_name, handler in self.__event_handlers.items():
             setattr(self.__client, event_name, handler)
-
+            
+            
     @property
-    def url(self) -> str:
+    def Client(self):
+        """
+        Get the underlying MQTT client instance.
+        Returns:
+            mqtt.Client: The MQTT client instance.
+        """
+        return self.__client
+    
+    
+    @property
+    def BrokerUrl(self) -> str:
         return self.__url
-
+    
+    
     @property
     def port(self) -> int:
         return self.__port
+    
     
     def sub(self, path, qos: int = 0):
         """
@@ -224,3 +221,4 @@ class MQute (Router):
             mqtt.Client: The MQTT client.
         """
         return self.__client
+    
