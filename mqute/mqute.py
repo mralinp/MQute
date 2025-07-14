@@ -21,6 +21,7 @@ class MQuteRequest(Request):
         super(self).__init__(path, payload, resolve)
         self.userdata = userdata
 
+
 class MQute (Router):
     
     
@@ -53,31 +54,27 @@ class MQute (Router):
         # Reattach any existing event handlers
         for event_name, handler in self.__event_handlers.items():
             setattr(self.__client, event_name, handler)
-            
+
     @property
-    def Client(self):
-        """
-        Get the underlying MQTT client instance.
-        Returns:
-            mqtt.Client: The MQTT client instance.
-        """
-        return self.__client
-    
-    @property
-    def BrokerUrl(self) -> str:
+    def url(self) -> str:
         return self.__url
-    
+
     @property
-    def BrokerPort(self) -> int:
+    def port(self) -> int:
         return self.__port
     
-    def sub(self, path):
+    def sub(self, path, qos: int = 0):
         """
-        Subscribe to an MQTT topic and register it with the router.
+        Subscribe to an MQTT topic and register a corresponding route handler.
+
         Args:
-            path (str): The topic to subscribe to.
+            path (str): The MQTT topic to subscribe to.
+            qos (int): MQTT Quality of Service level:
+                - 0: At most once (fire and forget).
+                - 1: At least once (message is retried until acknowledged).
+                - 2: Exactly once (message is delivered only once using handshake).
         """
-        self.__client.subscribe(path, qos=0)
+        self.__client.subscribe(path, qos=qos)
         super().sub(path)
     
         
@@ -206,8 +203,8 @@ class MQute (Router):
         self.__client.loop_stop()
         self.__client.disconnect()
     
-    
-    def publish(self, topic: str, payload: Any, qos: int = 0, retain: bool = False) -> None:
+    @property
+    def publish(self) -> Callable:
         """
         Publish a message to a specific MQTT topic.
         Args:
@@ -216,7 +213,7 @@ class MQute (Router):
             qos (int): Quality of Service level (default: 0).
             retain (bool): Whether to retain the message (default: False).
         """
-        self.__client.publish(topic, payload, qos=qos, retain=retain)
+        return self.__client.publish
         
         
     @property

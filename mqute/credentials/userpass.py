@@ -1,7 +1,7 @@
 from typing import Optional
 import paho.mqtt.client as paho
-from paho import mqtt
 from .base import Credential
+import ssl
 
 
 class UserPassCredential(Credential):
@@ -19,7 +19,7 @@ class UserPassCredential(Credential):
     
     def create_client(self) -> paho.Client:
         client = paho.Client(client_id=self._client_id, userdata=None, protocol=paho.MQTTv5)
-        client.tls_set(tls_version=mqtt.client.ssl.PROTOCOL_TLS)
+        client.tls_set(tls_version=ssl.PROTOCOL_TLSv1_2)
         if self._username and self._password:
             client.username_pw_set(
                 username=self._username,
