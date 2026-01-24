@@ -1,5 +1,6 @@
 from .base import Credential
-from .userpass import UserPassCredential
+from .user_pass import UserPassCredential
+
 
 __all__ = [
     'Credential',

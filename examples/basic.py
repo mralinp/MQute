@@ -2,6 +2,7 @@ from mqute import MQute, Router, JsonResponse
 from mqute.credentials import UserPassCredential
 from pydantic import BaseModel
 
+
 BROKER_URL = "mqtt://test.hivemq.com"
 # Create a router instance
 app = MQute(

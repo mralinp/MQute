@@ -5,11 +5,12 @@ MQute - A Python package for MQute
 from .router import Router
 from .response import Response, JsonResponse, ErrorResponse
 from .request import Request
-from .mqute import MQute
+from .mqute import MQute, MQuteRequest
 
 
 __all__ = [
     'MQute',
+    'MQuteRequest',
     'Router',
     'Response',
     'JsonResponse',

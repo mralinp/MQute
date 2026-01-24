@@ -1,4 +1,3 @@
-import pytest
 from mqute import Router, Request, Response, JsonResponse, ErrorResponse
 from dataclasses import dataclass
 

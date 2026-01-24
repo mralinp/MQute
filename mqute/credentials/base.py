@@ -16,4 +16,4 @@ class Credential(ABC):
         Returns:
             Configured MQTT client instance
         """
-        pass 
+        pass
