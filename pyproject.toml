@@ -1,22 +1,110 @@
 [build-system]
-requires = ["hatchling"]
+requires = ["hatchling>=1.24", "hatch-vcs>=0.4"]
 build-backend = "hatchling.build"
 
 [project]
 name = "mqute"
-version = "0.1.0"
-authors = [
-    { name = "Ali Naderi Parizi", email = "me@alinaderiparizi.com" },
-]
-description = "Elegant MQTT apps, the cute way."
+dynamic = ["version"]
+description = "Build MQTT applications the way you build web APIs with FastAPI."
 readme = "README.md"
-requires-python = ">=3.8"
+license = "GPL-3.0-or-later"
+license-files = ["LICENSE"]
+authors = [{ name = "Ali Naderi Parizi", email = "me@alinaderiparizi.com" }]
+requires-python = ">=3.10"
+dependencies = ["paho-mqtt>=2.0,<3"]
+keywords = ["mqtt", "iot", "asyncio", "framework", "fastapi", "hivemq", "mosquitto", "emqx"]
 classifiers = [
-    "Programming Language :: Python :: 3",
-    "License :: OSI Approved :: MIT License",
+    "Development Status :: 4 - Beta",
+    "Framework :: AsyncIO",
+    "Intended Audience :: Developers",
     "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: Communications",
+    "Topic :: Internet",
+    "Topic :: Software Development :: Libraries :: Application Frameworks",
+    "Typing :: Typed",
 ]
 
+[project.optional-dependencies]
+pydantic = ["pydantic>=2"]
+
+[project.scripts]
+mqute = "mqute.cli:main"
+
 [project.urls]
-"Homepage" = "https://github.com/mralinp/mqute"
-"Bug Tracker" = "https://github.com/mralinp/mqute/issues" 
+Homepage = "https://github.com/mralinp/mqute"
+Source = "https://github.com/mralinp/mqute"
+Issues = "https://github.com/mralinp/mqute/issues"
+Changelog = "https://github.com/mralinp/mqute/releases"
+
+[dependency-groups]
+dev = [
+    "pytest>=8",
+    "pytest-asyncio>=0.24",
+    "pytest-cov>=5",
+    "pydantic>=2",
+    "ruff>=0.6",
+    "mypy>=1.11",
+]
+
+[tool.hatch.version]
+source = "vcs"
+
+[tool.hatch.version.raw-options]
+# Releases are tagged vX.Y.Z by CI; anything else builds as a .devN version.
+local_scheme = "no-local-version"
+fallback_version = "0.0.0"
+
+[tool.hatch.build.targets.sdist]
+include = ["src/mqute", "tests", "README.md", "LICENSE"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/mqute"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+addopts = "-ra --strict-markers"
+markers = ["integration: needs a real MQTT broker (set MQUTE_TEST_BROKER_URL)"]
+filterwarnings = ["error"]
+
+[tool.coverage.run]
+source = ["mqute"]
+branch = true
+omit = ["*/mqute/__main__.py"]
+
+[tool.coverage.report]
+fail_under = 90
+show_missing = true
+skip_covered = true
+exclude_also = ["if TYPE_CHECKING:", "raise NotImplementedError", "\\.\\.\\."]
+
+[tool.ruff]
+line-length = 120
+target-version = "py310"
+src = ["src", "tests"]
+
+[tool.ruff.format]
+exclude = ["*.md"]  # README snippets are aligned by hand for readability
+
+[tool.ruff.lint]
+select = ["E", "W", "F", "I", "B", "UP", "SIM", "RUF", "C4", "PT", "RET", "N", "ASYNC"]
+
+[tool.ruff.lint.flake8-bugbear]
+extend-immutable-calls = ["mqute.Depends", "mqute.dependencies.Depends"]
+
+[tool.mypy]
+python_version = "3.10"
+strict = true
+files = ["src/mqute"]
+
+[[tool.mypy.overrides]]
+module = ["paho.*"]
+ignore_missing_imports = true
