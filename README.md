@@ -13,6 +13,7 @@
   <a href="https://pypi.org/project/mqute/"><img src="https://img.shields.io/pypi/v/mqute.svg" alt="PyPI"></a>
   <a href="https://pypi.org/project/mqute/"><img src="https://img.shields.io/pypi/pyversions/mqute.svg" alt="Python versions"></a>
   <a href="LICENSE"><img src="https://img.shields.io/pypi/l/mqute.svg" alt="License"></a>
+  <a href="https://pepy.tech/project/mqute"><img src="https://static.pepy.tech/badge/mqute" alt="Downloads"></a>
 </p>
 
 ---
